@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id='test_canvas'></canvas>
+    <script type="text/javascript">
+        var canvas = document.getElementById('test_canvas');
+        var ctx = canvas.getContext('2d');
+        canvas.width = screen.width;
+        canvas.height = screen.height;
+        var startX = 0;
+        var startY = 0;
+
+        var image = new Image();
+        image.src = "../res/left_64.png";
+        image.onload = function() {
+            console.log("图片加载成功");
+            ctx.drawImage(image, 0, 0, image.width, image.height, startX, startY, image.width, image.height);
+        };
+
+        canvas.addEventListener('touchmove', e => {
+            e.preventDefault();
+
+            var X = e.touches[0].pageX;
+            var Y = e.touches[0].pageY;
+
+            var disX = X - startX;
+            var disY = Y - startY;
+            if (Math.abs(disX) > Math.abs(disY) && disX > 0) {
+                image.src = "../res/right_64.png";
+            } else if (Math.abs(disX) > Math.abs(disY) && disX < 0) {
+                image.src = '../res/left_64.png';
+            }
+
+            if (X < 0) {
+                X = 0;
+            } else if (X > canvas.width - image.width) {
+                X = canvas.width - image.width;
+            }
+
+            if (Y < 0) {
+                Y = 0;
+            } else if (Y > canvas.height - image.height) {
+                Y = canvas.height - image.height;
+            }
+
+            // var endX = e.touches[0].pageX;
+            // var endY = e.touches[0].pageY;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(image, 0, 0, image.width, image.height, X, Y, image.width, image.height);
+            startX = X;
+            startY = Y;
+        })
+    </script>
+</body>
+
+</html>

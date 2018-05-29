@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>canvas绘制音乐播放器</title>
+    <style>
+        #range1,
+        #range2 {
+            height: 3px;
+            position: relative;
+            border: 0;
+            outline: 0;
+            box-shadow: 0 3px #300 inset;
+        }
+        
+        #range1 {
+            width: 250px;
+            left: -275px;
+            top: -10px;
+        }
+        
+        #range2 {
+            transform: rotate(-90deg);
+            width: 50px;
+            left: -320px;
+            top: -50px;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="can1" width="300px" height="500px"></canvas>
+    <audio src="voice/珍惜_孙露.mp3" id="audio"></audio>
+    <input type="range" min="0" max="1000" value="0" id="range1" />
+    <input type="range" min="0" max="10" step="1" value="3" id="range2" />
+</body>
+
+<script>
+    var ctx1 = can1.getContext('2d');
+    var img = new Image();
+    var img1 = new Image();
+    var img2 = new Image();
+    img.src = "img/bg.jpg"; //绘图背景//必须放在img1,img2前赋值,否则会盖住
+    img1.src = "img/loop.jpg";
+    img2.src = "img/play1.png";
+    var progress = 0; //设置权重，判断所有图片是否加载完成
+    img.onload = function() { //背景图片加载完成,判断是否所有图片加载完成,是-->开始画图
+        progress += 20;
+        (progress == 60) && star();
+    }
+    img1.onload = function() { //背景图片加载完成,判断是否所有图片加载完成,是-->开始画图
+        progress += 20;
+        (progress == 60) && star();
+    }
+    img2.onload = function() { //背景图片加载完成,判断是否所有图片加载完成,是-->开始画图
+            progress += 20;
+            (progress == 60) && star();
+        }
+        //开始画图
+    function star() {
+        ctx1.drawImage(img, 0, 0, 300, 500); //绘背景图
+        loop(); //绘制循环图 img1
+        ctx1.drawImage(img2, 100, 350, 100, 100); //绘图2
+    }
+
+    //循环事件,点击事件的全局变量
+    var i = 0;
+    var time = null;
+    var ispause = true;
+    //循环函数
+    function loop() {
+        ctx1.save(); //保存画笔当前状态
+        ctx1.translate(150, 165); //平移
+        ctx1.rotate(i * Math.PI / 180); //旋转
+        ctx1.drawImage(img1, -65, -65); //绘图
+        ctx1.restore(); //复位画笔之前的状态
+        //绘画两个圆
+        ctx1.strokeStyle = "#000";
+        ctx1.lineWidth = 20;
+        ctx1.arc(150, 165, 85, 0, 2 * Math.PI);
+        ctx1.stroke();
+        ctx1.beginPath();
+        ctx1.strokeStyle = "#303";
+        ctx1.lineWidth = 10;
+        ctx1.arc(150, 165, 75, 0, 2 * Math.PI);
+        ctx1.stroke();
+
+        i += 10;
+        (i >= 360) && (i = 0);
+    }
+    //点击事件
+    can1.onclick = function(e) {
+        var x = e.offsetX;
+        var y = e.offsetY;
+        //console.log(x,y);
+        if ((x - 150) * (x - 150) + (y - 400) * (y - 400) <= 50 * 50 * Math.PI) {
+            //console.log("我是圆");
+            if (ispause) {
+                audio.play();
+                ispause = false;
+                img2.src = "img/pause1.png";
+                time = setInterval(loop, 100);
+            } else {
+                audio.pause();
+                //clearInterval(time);
+                //ispause=true;
+                //img2.src="img/play.png";
+            }
+        }
+
+        //定时器,监听音乐是否播放完成，主要为了音乐播放完成停止
+        setInterval(function() {
+            if (audio.paused) {
+                ispause = true;
+                clearInterval(time);
+                img2.src = "img/play1.png";
+            }
+        }, 5);
+    }
+
+    //进度条改变事件--进度
+    range1.onchange = function() { //当前进度=音乐总时长*range当前值/range最大value值
+            audio.currentTime = parseFloat(range1.value * audio.duration / range1.max);
+        }
+        //监听音乐当前播放进度，时间低进度条改变事件失效(来不及改变)
+    setInterval("range1.value=parseFloat(range1.max*audio.currentTime/audio.duration);", 400);
+    //进度条改变事件--音量
+    audio.volume = 0.3;
+    range2.onchange = function() {
+        audio.volume = range2.value / 10;
+    }
+</script>
+
+</html>
