@@ -1,0 +1,40 @@
+©¦  game.js
+©¦  game.json
+©¦  Main.js
+©¦  project.config.json
+©¦  tree.txt
+©¦  
+©À©¤audio
+©¦      bgm.mp3
+©¦      
+©À©¤js
+©¦  ©¦  Director.js
+©¦  ©¦  
+©¦  ©À©¤base
+©¦  ©¦      DataStore.js
+©¦  ©¦      ResourceLoader.js
+©¦  ©¦      Resources.js
+©¦  ©¦      Sprite.js
+©¦  ©¦      
+©¦  ©À©¤player
+©¦  ©¦      Move.js
+©¦  ©¦      Score.js
+©¦  ©¦      StartButton.js
+©¦  ©¦      
+©¦  ©¸©¤runtime
+©¦          Background.js
+©¦          Coin.js
+©¦          Fire.js
+©¦          Land.js
+©¦          
+©¸©¤res
+        background1.png
+        background2.png
+        background3.png
+        background4.png
+        coin.png
+        fire.png
+        land.png
+        mover.png
+        start.png
+        
